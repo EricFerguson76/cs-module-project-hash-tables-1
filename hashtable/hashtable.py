@@ -86,7 +86,24 @@ class HashTable:
         # Your code here
 
         idx = self.hash_index(key)
-        self.buckets[idx] = value
+
+        if self.buckets[idx] != None:
+            node = self.buckets[idx]
+
+            while node is not None:
+                if node.key == key:
+                    node.value = value
+                    return
+
+                node = node.next
+
+            old_head = self.buckets[idx]
+            new_head = HashTableEntry(key, value)
+            new_head.next = old_head
+            self.buckets[idx] = new_head
+
+        else:
+            self.buckets[idx] = HashTableEntry(key, value)
 
     def delete(self, key):
         """
@@ -110,8 +127,14 @@ class HashTable:
         """
         # Your code here
         idx = self.hash_index(key)
-        value = self.buckets[idx]
-        return value
+        node = self.buckets[idx]
+
+        while node is not None:
+            if node.key == key:
+                return node.value
+            node = node.next
+
+        return None
 
     def resize(self, new_capacity):
         """
